@@ -1,5 +1,8 @@
-file format
-==============
+# Metric
+
+At evaluation time, for each shot and each request, we consider the most confident label (if it exists) among all labels whose similarity to the request are high enough. 
+
+# File format
 
 ## Shot List (.shot)
 
@@ -43,7 +46,7 @@ Field `personName` must only contain lower case latin alphabet characters (`a` t
 Hyphens and white spaces must be replaced by `_` (underscore). 
 
 Whenever possible, person name should include both the first name and the last name.
-You may use aliases if the person is introduced by their alias (e.g. `madonna` for Madonna Louise Ciccone)
+You may use aliases if the person is only introduced by their alias (e.g. `madonna` for Madonna Louise Ciccone)
 
 #### Example of valid person names
 
@@ -59,21 +62,24 @@ You may use aliases if the person is introduced by their alias (e.g. `madonna` f
 - `obama_barack` (first name should come first)
 
 
-## Hypothesis for shot (.hyp)
-<video> <name> <shot> <confidence> <evidence>
+## Label submission (.label)
 
-- video: video name
-- name: person name
-- shot: shot number
-- confidence: confidence score of the automatic system
+```
+videoID shotNumber personName confidence
+```
 
-## Hypothesis for evidence (.evid)
-<video> <name> <shot> <evidence> <type>
+- `videoID`: unique video identifier
+- `shotNumber`: shot number
+- `personName`: person name 
+- `confidence`: confidence score
 
-- video: video name
-- name: person name
-- shot: shot number
-- evidence: as ths shot is an evidence (True or False)
-- type: type of the evidence (spoken or written)
+## Evidence submission (.evidence)
 
+```
+personName videoID shotNumber source
+```
 
+- `personName`: person name 
+- `videoID`: unique video identifier
+- `shotNumber`: shot number
+- `source`: `audio` or `image`
