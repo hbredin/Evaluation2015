@@ -7,12 +7,12 @@ file format
 videoID shotNumber startTime endTime startFrame endFrame
 ```
 
-- videoID: unique video identifier
-- shotNumber: shot number
-- startTime: start time in seconds
-- endTime: end time in seconds
-- startFrame: start frame index
-- endFrame: end frame index
+- `videoID`: unique video identifier
+- `shotNumber`: shot number
+- `startTime`: start time in seconds
+- `endTime`: end time in seconds
+- `startFrame`: start frame index
+- `endFrame`: end frame index
 
 ### Example
 
@@ -26,10 +26,10 @@ BFMTV_PlanetShowBiz_1981-04-17_091700 000023 000054.235 000057.890 0001354 00014
 videoID shotNumber personName isEvidence
 ```
 
-- videoID: unique video identifier
-- shotNumber: shot number
-- personName: person name 
-- isEvidence: does this shot provide identity evidence for `personName` (`true`, `false` or `maybe`)
+- `videoID`: unique video identifier
+- `shotNumber`: shot number
+- `personName`: person name 
+- `isEvidence`: does this shot provide identity evidence for `personName` (`true`, `false` or `maybe`)
 
 ### Example
 
