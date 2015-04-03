@@ -73,6 +73,14 @@ videoID shotNumber personName confidence
 - `personName`: person name 
 - `confidence`: confidence score
 
+### Example
+
+```
+BFMTV_PlanetShowBiz_1981-04-17_091700 000023 yohann_poignent 0.23
+BFMTV_PlanetShowBiz_1981-04-17_091700 000024 yohann_poignent 0.32
+BFMTV_PlanetShowBiz_1981-04-17_091700 000025 yohann_poignent 1.20
+```
+
 ## Evidence submission (.evidence)
 
 ```
@@ -83,3 +91,10 @@ personName videoID shotNumber source
 - `videoID`: unique video identifier
 - `shotNumber`: shot number
 - `source`: `audio` or `image`
+
+### Example
+
+```
+yohann_poignent BFMTV_PlanetShowBiz_1981-04-17_091700 000024 image
+```
+
