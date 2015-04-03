@@ -2,7 +2,7 @@
 
 At evaluation time, for each shot and each request, we consider the most confident label (if it exists) among all labels whose similarity to the request are high enough. 
 
-### Person name
+### Person name convention
 
 Field `personName` must only contain lower case latin alphabet characters (`a` to `z`) with diacritical.
 Hyphens and white spaces must be replaced by `_` (underscore). 
@@ -52,7 +52,7 @@ videoID shotNumber personName isEvidence
 
 - `videoID`: unique video identifier
 - `shotNumber`: shot number
-- `personName`: person name 
+- `personName`: person name (according to convention)
 - `isEvidence`: does this shot provide identity evidence for `personName` (`true`, `false` or `maybe`)
 
 ### Example
@@ -70,7 +70,7 @@ videoID shotNumber personName confidence
 
 - `videoID`: unique video identifier
 - `shotNumber`: shot number
-- `personName`: person name 
+- `personName`: person name (according to convention)
 - `confidence`: confidence score
 
 ### Example
@@ -83,11 +83,14 @@ BFMTV_PlanetShowBiz_1981-04-17_091700 000025 yohann_poignent 1.20
 
 ## Evidence submission (.evidence)
 
+Evidence submission file MUST contain exactly one line per unique `personName` in label submission file.
+In case no evidence is provided, the corresponding lines in the label submission file are removed prior evaluation. 
+
 ```
 personName videoID shotNumber source
 ```
 
-- `personName`: person name 
+- `personName`: person name (according to convention)
 - `videoID`: unique video identifier
 - `shotNumber`: shot number
 - `source`: `audio` or `image`
