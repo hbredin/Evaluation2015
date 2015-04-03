@@ -41,7 +41,7 @@ videoID shotNumber startTime endTime startFrame endFrame
 ### Example
 
 ```
-BFMTV_PlanetShowBiz_1981-04-17_091700 000023 000054.235 000057.890 0001354 0001440
+BFMTV_PlanetShowBiz_1981-04-17_091700 000023 00054.235 00057.890 0001354 0001440
 ```
 
 ## Reference (.ref)
