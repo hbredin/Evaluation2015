@@ -1,6 +1,26 @@
 file format
 ==============
 
+## Shot List (.shot)
+
+video shot tstart tend fstart fend
+
+- video: unique video identifier
+- shot: shot number
+- tstart: start time in seconds
+- tend: end time in seconds
+- fstart: start frame index
+- fend: end frame index
+
+### Example
+
+BFMTV_PlanetShowBiz_1981-04-17_091700 000023 000054.235 000057.890 0001354 0001440
+
+
+
+
+
+
 ## shot reference (.ref)
 <video> <name> <shot> <evidence>
 
