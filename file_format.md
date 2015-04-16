@@ -54,7 +54,7 @@ videoID shotNumber personName isEvidence evidenceSource
 - `shotNumber`: shot number
 - `personName`: person name (according to convention)
 - `isEvidence`: does this shot provide identity evidence for `personName` (`true`, `false` or `na`)
-- `evidenceSource`: `audio` or `image` or `both` 
+- `evidenceSource`: `na` or `audio` or `image` or `both` 
 
 ### Example
 
