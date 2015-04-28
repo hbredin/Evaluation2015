@@ -19,7 +19,7 @@ pip install -r requirements.txt
 ### Usage
 
 ```bash
-python evaluation.py shot reference hypothesis.label hypothesis.evidence
+python evaluation.py dev.shot dev.ref dev.label dev.evidence
 ```
 ## File format
 
@@ -59,7 +59,6 @@ videoID shotNumber personName isEvidence evidenceSource
 ```
 BFMTV_PlanetShowBiz_1981-04-17_091700 000023 johann_poignant true
 ```
-
 
 ### Label submission (.label)
 
