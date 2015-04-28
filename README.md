@@ -2,11 +2,39 @@
 
 WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
 
-This repository provides the definition of the official evaluation metric of the "Person Discovery" [MediaEval](http://www.multimediaeval.org/mediaeval2015/) task.
+This repository provides the definition of the official evaluation metric of the "Person Discovery" [MediaEval](http://www.multimediaeval.org/mediaeval2015/) task, along with 
+
+## Evaluation metric
+
+At evaluation time, for each shot and each request, we consider the most confident label (if it exists) among all labels whose similarity to the request are high enough. 
+
+![MMAP](MMAP.png)
+
+### Person name convention
+
+Field `personName` must only contain lower case latin alphabet characters (`a` to `z`) with diacritical.
+Hyphens and white spaces must be replaced by `_` (underscore). 
+
+Whenever possible, person name should include both the first name and the last name.
+You may use aliases if the person is only introduced by their alias (e.g. `madonna` for Madonna Louise Ciccone)
+
+#### Example of valid person names
+
+- `johann_poignant` for Johann Poignant
+- `herve_bredin` for Herv**é** Bredin
+- `marie_antoinette_josephe_jeanne_de_habsbourg_lorraine` for Marie**-**Antoinette Jos**è**phe Jeanne de Habsbourg**-**Lorraine 
+
+#### Example of invalid person names
+
+- `Herve_Bredin` (lower case only)
+- `claude barras` (no space)
+- `françois_hollande` (no diacritical)
+- `obama_barack` (first name should come first)
+
+
+## Evaluation tools
 
 Official Python implementation is available and will be the one used for ranking submissions.
-
-## Python
 
 ### Installation
 
