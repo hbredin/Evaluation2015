@@ -1,41 +1,41 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Evaluation](#evaluation)
-  - [Foreword: `personName` convention](#foreword-personname-convention)
-    - [Example of valid person names](#example-of-valid-person-names)
-    - [Example of invalid person names](#example-of-invalid-person-names)
-  - [Evaluation protocol](#evaluation-protocol)
-    - [Label submission file](#label-submission-file)
-      - [.label file format](#label-file-format)
-      - [Example](#example)
-    - [Evidence submission file](#evidence-submission-file)
-      - [.evidence file format](#evidence-file-format)
-      - [Example](#example-1)
-    - [Evaluation of labels](#evaluation-of-labels)
-    - [Evaluation of evidences](#evaluation-of-evidences)
-  - [Evaluation tools](#evaluation-tools)
-    - [Installation](#installation)
-    - [Usage](#usage)
-  - [File format](#file-format)
-    - [Shot List (.shot)](#shot-list-shot)
-      - [Example](#example-2)
-    - [Reference (.ref)](#reference-ref)
-      - [Example](#example-3)
-    - [Label submission (.label)](#label-submission-label)
-      - [Example](#example-4)
-    - [Evidence submission (.evidence)](#evidence-submission-evidence)
-      - [Example](#example-5)
-  - [Contribute](#contribute)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # Evaluation
 
 WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
 
 This repository provides the definition of the official evaluation metric of the "Person Discovery" [MediaEval](http://www.multimediaeval.org/mediaeval2015/) task, along with tools to compute this metric.
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Foreword: `personName` convention](#foreword-personname-convention)
+  - [Example of valid person names](#example-of-valid-person-names)
+  - [Example of invalid person names](#example-of-invalid-person-names)
+- [Evaluation protocol](#evaluation-protocol)
+  - [Label submission file](#label-submission-file)
+    - [.label file format](#label-file-format)
+    - [Example](#example)
+  - [Evidence submission file](#evidence-submission-file)
+    - [.evidence file format](#evidence-file-format)
+    - [Example](#example-1)
+  - [Evaluation of labels](#evaluation-of-labels)
+  - [Evaluation of evidences](#evaluation-of-evidences)
+- [Evaluation tools](#evaluation-tools)
+  - [Installation](#installation)
+  - [Usage](#usage)
+- [File format](#file-format)
+  - [Shot List (.shot)](#shot-list-shot)
+    - [Example](#example-2)
+  - [Reference (.ref)](#reference-ref)
+    - [Example](#example-3)
+  - [Label submission (.label)](#label-submission-label)
+    - [Example](#example-4)
+  - [Evidence submission (.evidence)](#evidence-submission-evidence)
+    - [Example](#example-5)
+- [Contribute](#contribute)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ## Foreword: `personName` convention
 
