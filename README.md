@@ -2,7 +2,7 @@
 
 WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
 
-This repository provides the definition of the official evaluation metric of the "Person Discovery" [MediaEval](http://www.multimediaeval.org/mediaeval2015/) task, along with tools to compute this metric.
+This repository provides the definition of the official evaluation metric of the "Person Discovery" MediaEval task, along with tools to compute this metric.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -117,23 +117,21 @@ For each query q and for each video v, the shots for which an hypothesized `pers
 
 This process allows to compute an average precision specific to the query q and video v:
 
-![Average Precision](AP.png)
+![Average Precision](equations/AP.png)
 
-where ![precision at k](precision.png) is "precision at rank `k`", ![delta_k](delta_k.png) is ... and ![Delta](Delta.png) 
+where ![precision at k](equations/precision.png) is "precision at rank `k`", ![delta_k](equations/delta_k.png) is ... and ![Delta](equations/Delta.png) 
 
 We then compute the Mean Mean Average Precision as follows:
 
-![Mean Mean Average Precision](MMAP.png)
+![Mean Mean Average Precision](equations/MMAP.png)
 
 This is to ensure that ...
 
 ### Evaluation of evidences
 
-Average precision will be modified slightly to take the quality of proofs into account. Hence, instead of a binary judgment (relevant vs. not relevant), shot relevance will be computed as follows (the value of α will be discussed during the development phase):
+Average precision will be modified slightly to take the quality of evidences into account. Hence, instead of a binary judgment (relevant vs. not relevant), shot relevance will be computed as follows (the value of α will be discussed during the development phase):
 
 {shot relevance} = α . {shot is relevant} + (1 - α) . {proof is correct}
-
-
 
 
 ## Evaluation tools
