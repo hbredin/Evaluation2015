@@ -6,7 +6,7 @@ A detailed description can be found in the [wiki](https://github.com/MediaevalPe
 ### Evaluation tools
 
 We provide a Python implementation of EwMAP.  
-This implementation will be the one used for ranking submissions.
+This implementation will used for ranking submissions.
 
 
 #### Installation
