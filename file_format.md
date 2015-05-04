@@ -47,14 +47,24 @@ BFMTV_PlanetShowBiz_1981-04-17_091700 000023 00054.235 00057.890 0001354 0001440
 ## Reference (.ref)
 
 ```
-videoID shotNumber personName isEvidence evidenceSource
+videoID shotNumber personName
 ```
 
 - `videoID`: unique video identifier
 - `shotNumber`: shot number
 - `personName`: person name (according to convention)
-- `isEvidence`: does this shot provide identity evidence for `personName` (`true`, `false` or `na`)
-- `evidenceSource`: `na` or `audio` or `image` or `both` 
+
+## Evidence reference (.eviref)
+
+```
+videoID shotNumber personName evidenceSource
+```
+
+- `videoID`: unique video identifier
+- `shotNumber`: shot number
+- `personName`: person name (according to convention)
+- `evidenceSource`: `audio` or `image` or `both` 
+
 
 ### Example
 
