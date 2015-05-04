@@ -32,5 +32,4 @@ More information about file formats can be found in the [wiki](https://github.co
 
 ## Contribute
 
-Feel free to contribute to the tool or share your own implementations in alternative languages, using [GitHub's pull request](https://help.github.com/articles/using-pull-requests/) procedure.  
-We will gladly add them to this repository.
+Feel free to contribute to the tool or share your own implementations in alternative languages, using [GitHub's pull request](https://help.github.com/articles/using-pull-requests/) procedure. We will gladly add them to this repository.
