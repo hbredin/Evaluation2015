@@ -1,19 +1,15 @@
-# Evaluation
+## Evidence-weighted Mean Average Precision
 
-WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS - WORK IN PROGRESS
+The official evaluation metric is the Evidence-weighted Mean Average Precision (or EwMAP).  
+A detailed description can be found in the [wiki](https://github.com/MediaevalPersonDiscoveryTask/evaluation/wiki/Evaluation-metric) of this repository.
 
-This repository provides the definition of the official evaluation metric of the "Person Discovery" MediaEval task, along with tools to compute this metric.
-
-## Evaluation metric
-
-The official metric for the MediaEval "Person Discovery" task is the [Evidence-weighted Mean Average Precision](https://github.com/MediaevalPersonDiscoveryTask/evaluation/wiki/Evaluation-metric) (EwMAP).
-
-## Evaluation tools
+### Evaluation tools
 
 We provide a Python implementation of EwMAP.  
 This implementation will be the one used for ranking submissions.
 
-### Installation
+
+#### Installation
 
 ```bash
 git clone https://github.com/MediaevalPersonDiscoveryTask/evaluation.git
@@ -21,15 +17,21 @@ cd evaluation
 pip install -r requirements.txt
 ```
 
-### Usage
+#### Usage
 
 ```bash
-python evaluation.py dev.shot dev.ref dev.label dev.evidence
+$ python evaluation.py samples/dev.shot \    # reference list of shots
+                       samples/dev.ref  \    # label reference
+                       samples/dev.eviref \  # evidence reference
+                       samples/dev.label \   # label hypothesis
+                       samples/dev.evidence  # evidence hypothesis
+EwMAP = xx.xx %  # <-- official evaluation metric (higher is better)
+MAP = 29.05 %    # <-- standard mean average precision (higher is better)
+C = 25.38 %      # <-- evidence correctness (higher is better)
 ```
 
-More information about file formats can be found in the [wiki](https://github.com/MediaevalPersonDiscoveryTask/evaluation/wiki/Evaluation-metric).
+More information about file formats can be found in the [wiki](https://github.com/MediaevalPersonDiscoveryTask/evaluation/wiki/File-format).
 
-
-## Contribute
+#### Contribute
 
 Feel free to contribute to the tool or share your own implementations in alternative languages, using [GitHub's pull request](https://help.github.com/articles/using-pull-requests/) procedure. We will gladly add them to this repository.
