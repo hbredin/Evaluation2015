@@ -26,8 +26,8 @@ $ python evaluation.py samples/dev.shot \    # reference list of shots
                        samples/dev.label \   # label hypothesis
                        samples/dev.evidence  # evidence hypothesis
 EwMAP = xx.xx %  # <-- official evaluation metric (higher is better)
-MAP = 29.05 %    # <-- standard mean average precision (higher is better)
-C = 25.38 %      # <-- evidence correctness (higher is better)
+MAP = yy.yy %    # <-- standard mean average precision (higher is better)
+C = zz.zz %      # <-- evidence correctness (higher is better)
 ```
 
 More information about file formats can be found in the [wiki](https://github.com/MediaevalPersonDiscoveryTask/evaluation/wiki/File-format).
