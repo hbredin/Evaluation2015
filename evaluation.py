@@ -2,12 +2,13 @@
 MediaEval Person Discovery Task evaluation.
 
 Usage:
-  evaluation [options] <reference.shot> <reference.ref> <hypothesis.label> <hypothesis.evidence>
+  evaluation [options] <reference.shot> <reference.ref> <reference.eviref> <hypothesis.label> <hypothesis.evidence>
 
 Options:
   -h --help                  Show this screen.
   --version                  Show version.
-  --levenshtein=<threshold>  Levenshtein ratio threshold [default: 1.00]
+  --queries=<queries.lst>    Query list.
+  --levenshtein=<threshold>  Levenshtein ratio threshold [default: 0.95]
 """
 
 from docopt import docopt
@@ -16,7 +17,7 @@ from Levenshtein import ratio
 import numpy as np
 
 
-def loadFiles(shot, reference, label, evidence):
+def loadFiles(shot, reference, evireference, label, evidence):
 
     # shot list format:
     # videoID shotNumber startTime endTime startFrame endFrame
@@ -53,24 +54,26 @@ def loadFiles(shot, reference, label, evidence):
     # check that evidences are chosen among selected shots
     evidenceShots = set(tuple(s) for _, s in evidence[['videoID', 'shotNumber']].iterrows())
     if not evidenceShots.issubset(shotShots):
-        print evidenceShots - shotShots
-        print shotShots - evidenceShots
         msg = ('Evidences should only be chosen among provided shots.')
         raise ValueError(msg)
 
-    # reference submission format:
-    # personName videoID shotNumber source
-    names = ['videoID', 'shotNumber', 'personName', 'isEvidence', 'source']
+    # reference format
+    names = ['videoID', 'shotNumber', 'personName']
     reference = pd.read_table(reference, sep=' ', names=names)
 
-    return shot, reference, label, evidence
+    # evireference format
+    # personName videoID shotNumber source
+    names = ['videoID', 'shotNumber', 'personName', 'source']
+    evireference = pd.read_table(evireference, sep=' ', names=names)
+
+    return shot, reference, evireference, label, evidence
 
 
 def closeEnough(personName, query, threshold):
     return ratio(query, personName) >= threshold
 
 
-def computeAveragePrecision(vReturned, vRelevant):
+def computeAveragePrecision(vReturned, vRelevant, n=100):
 
     nReturned = len(vReturned)
     nRelevant = len(vRelevant)
@@ -95,83 +98,100 @@ if __name__ == '__main__':
 
     shot = arguments['<reference.shot>']
     reference = arguments['<reference.ref>']
+    evireference = arguments['<reference.eviref>']
     label = arguments['<hypothesis.label>']
     evidence = arguments['<hypothesis.evidence>']
     threshold = float(arguments['--levenshtein'])
 
-    shot, reference, label, evidence = loadFiles(shot, reference,
-                                                 label, evidence)
+    shot, reference, evireference, label, evidence = loadFiles(
+        shot, reference, evireference, label, evidence)
 
-    # =========================================================================
-    # Evaluation of LABELS
-    # =========================================================================
+    if arguments['--queries']:
+        with open(arguments['--queries'], 'r') as f:
+            queries = [line.strip() for line in f]
 
-    # build list of queries from reference
-    queries = sorted(set(reference['personName'].unique()))
-
-    # helper object for subsequent filtering by distance to query
-    personNames = label['personName']
+    else:
+        # build list of queries from reference
+        queries = sorted(set(reference['personName'].unique()))
 
     # query --> averagePrecision dictionary
     averagePrecision = {}
+    correctness = {}
 
     for query in queries:
 
+        # find most similar personName
+        ratios = [(personName, ratio(query, personName))
+                  for personName in evidence.personName.unique()]
+        best = sorted(ratios, key=lambda x: x[1], reverse=True)[0]
+
+        personName = best[0] if best[1] > threshold else None
+
+        if personName is None:
+            averagePrecision[query] = 0.
+            correctness[query] = 0.
+            continue
+
+        # =====================================================================
+        # Evaluation of LABELS
+        # =====================================================================
+
         # get relevant shots for this query, according to reference
-        qRelevant = reference[reference['personName'] == query]
+        qRelevant = reference[reference.personName == query]
         qRelevant = qRelevant[['videoID', 'shotNumber']]
         qRelevant = set((videoID, shotNumber)
                         for _, videoID, shotNumber in qRelevant.itertuples())
 
         # get returned shots for this query
-        # (i.e. shots containing close enough labels)
-        qReturned = label[personNames.apply(closeEnough,
-                                            args=(query, threshold))]
+        # (i.e. shots containing closest personName)
+        qReturned = label[label.personName == personName]
 
-        # corner case when no label are close enough to the query
-        if qReturned.empty:
-            qReturned = []
+        # sort shots by decreasing confidence
+        # (in case of shots returned twice for this query, keep maximum)
+        qReturned = (qReturned.groupby(['videoID', 'shotNumber'])
+                              .aggregate(np.max)
+                              .sort(['confidence'], ascending=False))
 
-        # general case when at least one label matches the query
-        else:
-
-            # sort shots by decreasing confidence
-            # (in case of shots returned twice for this query, keep maximum)
-            qReturned = (qReturned.groupby(['videoID', 'shotNumber'])
-                                  .aggregate(np.max)
-                                  .sort(['confidence'], ascending=False))
-
-            # get list of returned shots in decreasing confidence
-            qReturned = list(qReturned.index)
+        # get list of returned shots in decreasing confidence
+        qReturned = list(qReturned.index)
 
         # compute average precision for this query
         averagePrecision[query] = computeAveragePrecision(qReturned,
                                                           qRelevant)
 
-    # average over all queries
-    meanAveragePrecision = np.mean([averagePrecision[query] for query in queries])
+        # =====================================================================
+        # Evaluation of EVIDENCES
+        # =====================================================================
 
-    # =========================================================================
-    # Evaluation of EVIDENCES
-    # =========================================================================
+        # get evidence shots for this query, according to reference
+        qRelevant = evireference[evireference.personName == query]
+        qRelevant = qRelevant[['videoID', 'shotNumber', 'source']]
 
-    accuracy = {}
+        _qRelevant = set([])
+        for _, videoID, shotNumber, source in qRelevant.itertuples():
 
-    for _, personName, videoID, shotNumber, source in evidence.itertuples():
+            if source == 'both':
+                _qRelevant.add((videoID, shotNumber, 'audio'))
+                _qRelevant.add((videoID, shotNumber, 'image'))
+            else:
+                _qRelevant.add((videoID, shotNumber, source))
 
-        # list of person names for which
-        # reference says this shot is evidence
-        isEvidenceFor = list(reference[(
-            (reference.videoID == videoID) *
-            (reference.shotNumber == shotNumber) *
-            (reference.isEvidence))]['personName'])
+        qRelevant = _qRelevant
 
-        if isEvidenceFor:
-            accuracy[personName] = max(ratio(personName, name) for name in isEvidenceFor)
+        qReturned = evidence[evidence.personName == personName][['videoID', 'shotNumber', 'source']]
+        for _, videoID, shotNumber, source in qReturned.itertuples():
+            break
+
+        if (videoID, shotNumber, source) in qRelevant:
+            correctness[query] = best[1] if best[1] > threshold else 0.
         else:
-            accuracy[personName] = 0
+            correctness[query] = 0.
+            print query, personName, videoID, shotNumber, source
 
-    meanAccuracy = np.mean([accuracy[personName] for personName in accuracy])
+    MAP = np.mean([averagePrecision[query] for query in queries])
+    mCorrectness = np.mean([correctness[query] for query in queries])
+    EwMAP = np.mean([correctness[query] * averagePrecision[query] for query in queries])
 
-    print 'Labels    = {label:5.2f} %'.format(label=100 * meanAveragePrecision)
-    print 'Evidences = {evidence:5.2f} %'.format(evidence=100 * meanAccuracy)
+    print 'EwMAP = %.2f %%' % (100 * EwMAP)
+    print 'MAP = %.2f %%' % (100 * MAP)
+    print 'C = %.2f %%' % (100 * mCorrectness)
