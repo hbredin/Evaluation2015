@@ -73,7 +73,7 @@ def closeEnough(personName, query, threshold):
     return ratio(query, personName) >= threshold
 
 
-def computeAveragePrecision(vReturned, vRelevant, n=100):
+def computeAveragePrecision(vReturned, vRelevant):
 
     nReturned = len(vReturned)
     nRelevant = len(vRelevant)
@@ -186,7 +186,6 @@ if __name__ == '__main__':
             correctness[query] = best[1] if best[1] > threshold else 0.
         else:
             correctness[query] = 0.
-            print query, personName, videoID, shotNumber, source
 
     MAP = np.mean([averagePrecision[query] for query in queries])
     mCorrectness = np.mean([correctness[query] for query in queries])
