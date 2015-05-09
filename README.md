@@ -20,14 +20,15 @@ pip install -r requirements.txt
 #### Usage
 
 ```bash
-$ python evaluation.py samples/dev.shot \    # reference list of shots
-                       samples/dev.ref  \    # label reference
-                       samples/dev.eviref \  # evidence reference
-                       samples/dev.label \   # label hypothesis
-                       samples/dev.evidence  # evidence hypothesis
-EwMAP = xx.xx %  # <-- official evaluation metric (higher is better)
-MAP = yy.yy %    # <-- standard mean average precision (higher is better)
-C = zz.zz %      # <-- evidence correctness (higher is better)
+$ python evaluation.py --queries=samples/queries.lst  # list of queries
+                       samples/dev.test2.shot \       # reference list of shots
+                       samples/dev.test2.ref  \       # label reference
+                       samples/dev.test2.eviref \     # evidence reference
+                       samples/dev.test2.label \      # label hypothesis
+                       samples/dev.test2.evidence     # evidence hypothesis
+EwMAP = 51.39 %  # <-- official evaluation metric (higher is better)
+MAP = 51.77 %    # <-- standard mean average precision (higher is better)
+C = 58.75 %      # <-- evidence correctness (higher is better)
 ```
 
 More information about file formats can be found in the [wiki](https://github.com/MediaevalPersonDiscoveryTask/evaluation/wiki/File-format).
