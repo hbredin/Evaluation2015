@@ -1,3 +1,32 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
+# The MIT License (MIT)
+
+# Copyright (c) 2015 CNRS
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# AUTHORS
+# Hervé BREDIN - http://herve.niderb.fr
+
+
 """
 MediaEval Person Discovery Task evaluation.
 
@@ -12,59 +41,23 @@ Options:
 """
 
 from docopt import docopt
-import pandas as pd
 from Levenshtein import ratio
 import numpy as np
+
+from common import loadShot, loadLabel, loadEvidence, checkSubmission
+from common import loadLabelReference, loadEvidenceReference
 
 
 def loadFiles(shot, reference, evireference, label, evidence):
 
-    # shot list format:
-    # videoID shotNumber startTime endTime startFrame endFrame
-    names = ['videoID', 'shotNumber',
-             'startTime', 'endTime',
-             'startFrame', 'endFrame']
-    shot = pd.read_table(shot, sep=' ', names=names, index_col=[0, 1])
+    shot = loadShot(shot)
+    label = loadLabel(label)
+    evidence = loadEvidence(evidence)
 
-    # label submission format:
-    # videoID shotNumber personName confidence
-    names = ['videoID', 'shotNumber', 'personName', 'confidence']
-    label = pd.read_table(label, sep=' ', names=names)
+    checkSubmission(shot, label, evidence)
 
-    # check that labels are only provided for selected shots
-    shotShots = set(shot.index)
-    labelShots = set(tuple(s) for _, s in label[['videoID', 'shotNumber']].iterrows())
-    if not labelShots.issubset(shotShots):
-        msg = ('Labels should only be computed for provided shots.')
-        raise ValueError(msg)
-
-    # evidence submission format:
-    # personName videoID shotNumber source
-    names = ['personName', 'videoID', 'shotNumber', 'source']
-    evidence = pd.read_table(evidence, sep=' ', names=names)
-
-    # check that evidence is provided for every unique label
-    labelNames = set(label['personName'].unique())
-    evidenceNames = set(evidence['personName'].unique())
-    if labelNames != evidenceNames:
-        msg = ('There must be exactly one evidence '
-               'per unique name in label submission.')
-        raise ValueError(msg)
-
-    # check that evidences are chosen among selected shots
-    evidenceShots = set(tuple(s) for _, s in evidence[['videoID', 'shotNumber']].iterrows())
-    if not evidenceShots.issubset(shotShots):
-        msg = ('Evidences should only be chosen among provided shots.')
-        raise ValueError(msg)
-
-    # reference format
-    names = ['videoID', 'shotNumber', 'personName']
-    reference = pd.read_table(reference, sep=' ', names=names)
-
-    # evireference format
-    # personName videoID shotNumber source
-    names = ['videoID', 'shotNumber', 'personName', 'source']
-    evireference = pd.read_table(evireference, sep=' ', names=names)
+    reference = loadLabelReference(reference)
+    evireference = loadEvidenceReference(evireference)
 
     return shot, reference, evireference, label, evidence
 
