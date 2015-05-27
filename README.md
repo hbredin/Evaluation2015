@@ -42,6 +42,13 @@ We provide a Python script to manage (list, delete, create) your submissions.
 $ python submission.py --help
 ```
 
+## Changelog
+
+### Version 0.1 (2015-05-27)
+
+  - first version
+
+
 ## Contribute
 
 Feel free to contribute to the evaluation tool or share your own implementations in alternative languages, using [GitHub's pull request](https://help.github.com/articles/using-pull-requests/) procedure. We will gladly add them to this repository.
