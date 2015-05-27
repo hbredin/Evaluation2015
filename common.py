@@ -72,6 +72,12 @@ def checkSubmission(shot, label, evidence):
                'per unique name in label submission.')
         raise ValueError(msg)
 
+    # check that there is no more than one evidence per label
+    if len(evidenceNames) != len(evidence):
+        msg = ('There must be exactly one evidence '
+               'per unique name in label submission.')
+        raise ValueError(msg)
+
     # check that evidences are chosen among selected shots
     evidenceShots = set(tuple(s) for _, s in evidence[['videoID', 'shotNumber']].iterrows())
     if not evidenceShots.issubset(shotShots):
