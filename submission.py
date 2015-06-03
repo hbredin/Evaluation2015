@@ -336,7 +336,9 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
             data_type=DATATYPE_EVIDENCE,
             fragment_type=FRAGMENTTYPE_SUBMISSION,
             description={
-                "status": SUBMISSION_STATUS_WIP
+                "status": SUBMISSION_STATUS_WIP,
+                "id_user": GLOBAL_ME._id,
+                "id_team": GLOBAL_TEAM._id
             },
             returns_id=True
         )
@@ -365,6 +367,8 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
             description={
                 "status": SUBMISSION_STATUS_WIP,
                 "id_evidence": evidenceLayer,
+                "id_user": GLOBAL_ME._id,
+                "id_team": GLOBAL_TEAM._id
             },
             returns_id=True
         )
@@ -390,7 +394,9 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
             evidenceLayer,
             description={
                 "status": SUBMISSION_STATUS_WIP,
-                "id_label": labelLayer
+                "id_label": labelLayer,
+                "id_user": GLOBAL_ME._id,
+                "id_team": GLOBAL_TEAM._id
             }
         )
 
@@ -459,7 +465,9 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
             description={
                 "submission": submissionType,
                 "status": SUBMISSION_STATUS_OK,
-                "id_label": labelLayer
+                "id_label": labelLayer,
+                "id_user": GLOBAL_ME._id,
+                "id_team": GLOBAL_TEAM._id
             }
         )
 
@@ -468,7 +476,9 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
             description={
                 "submission": submissionType,
                 "status": SUBMISSION_STATUS_OK,
-                "id_evidence": evidenceLayer
+                "id_evidence": evidenceLayer,
+                "id_user": GLOBAL_ME._id,
+                "id_team": GLOBAL_TEAM._id
             }
         )
 
