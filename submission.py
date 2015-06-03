@@ -486,12 +486,12 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
             GLOBAL_SUBMISSION_QUEUE,
             {
                 "submittedBy": GLOBAL_ME._id,
-                "team": GLOBAL_TEAM._id,
+                "id_team": GLOBAL_TEAM._id,
                 "date": GLOBAL_CLIENT.getDate().date,
                 "type": submissionType,
                 "name": submissionName,
-                "evidence": evidenceLayer,
-                "label": labelLayer
+                "id_evidence": evidenceLayer,
+                "id_label": labelLayer
             })
 
     except Exception:
@@ -600,10 +600,10 @@ def modeDelete():
                 GLOBAL_SUBMISSION_QUEUE,
                 {
                     "deletedBy": GLOBAL_ME._id,
-                    "team": GLOBAL_TEAM._id,
+                    "id_team": GLOBAL_TEAM._id,
                     "date": GLOBAL_CLIENT.getDate().date,
-                    "evidence": evidenceLayer,
-                    "label": labelLayer
+                    "id_evidence": evidenceLayer,
+                    "id_label": labelLayer
                 })
 
         except Exception:
