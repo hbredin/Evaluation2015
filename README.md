@@ -44,7 +44,11 @@ $ python submission.py --help
 
 ## Changelog
 
-### Version 0.1 (2015-05-27)
+#### Version 0.2 (2015-06-08)
+
+  - feat: submission script
+
+#### Version 0.1 (2015-05-27)
 
   - first version
 
