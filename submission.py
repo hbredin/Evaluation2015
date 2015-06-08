@@ -84,7 +84,7 @@ QUEUE_SUBMISSION = 'mediaeval.submission.in'
 
 DATATYPE_EVIDENCE = "mediaeval.persondiscovery.evidence"
 DATATYPE_LABEL = "mediaeval.persondiscovery.label"
-FRAGMENTTYPE_SUBMISSION = "mediaeval.persondiscovery._id_shot",
+FRAGMENTTYPE_SUBMISSION = "mediaeval.persondiscovery._id_shot"
 
 # Camomile client
 GLOBAL_CLIENT = None
