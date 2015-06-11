@@ -487,6 +487,8 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
             {
                 "submittedBy": GLOBAL_ME._id,
                 "id_team": GLOBAL_TEAM._id,
+                "team": GLOBAL_TEAM.name,
+                "user": GLOBAL_ME.username,
                 "date": GLOBAL_CLIENT.getDate().date,
                 "type": submissionType,
                 "name": submissionName,
@@ -601,6 +603,8 @@ def modeDelete():
                 {
                     "deletedBy": GLOBAL_ME._id,
                     "id_team": GLOBAL_TEAM._id,
+                    "team": GLOBAL_TEAM.name,
+                    "user": GLOBAL_ME.username,
                     "date": GLOBAL_CLIENT.getDate().date,
                     "id_evidence": evidenceLayer,
                     "id_label": labelLayer
