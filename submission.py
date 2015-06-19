@@ -79,6 +79,7 @@ SUBMISSION_STATUS_WIP = 'incomplete'
 SUBMISSION_STATUS_OK = 'complete'
 GROUP_ORGANIZER = 'organizer'
 USER_ROBOT_SUBMISSION = 'robot_submission'
+USER_ROBOT_LEADERBOARD = 'robot_leaderboard'
 LAYER_SUBMISSION_SHOT = 'mediaeval.submission_shot'
 QUEUE_SUBMISSION = 'mediaeval.submission.in'
 
@@ -99,6 +100,7 @@ GLOBAL_SHOT_MAPPING = None
 GLOBAL_USERS = None
 GLOBAL_ME = None
 GLOBAL_ROBOT_SUBMISSION = None
+GLOBAL_ROBOT_LEADERBOARD = None
 
 # groups
 GLOBAL_GROUPS = None
@@ -243,6 +245,7 @@ def initializeForSubmission():
         debug('initializeForSubmission')
 
     global GLOBAL_ORGANIZER
+    global GLOBAL_ROBOT_LEADERBOARD
     global GLOBAL_ROBOT_SUBMISSION
     global GLOBAL_SHOT_MAPPING
     global GLOBAL_VIDEO_MAPPING
@@ -277,6 +280,21 @@ def initializeForSubmission():
             break
     if GLOBAL_ROBOT_SUBMISSION is None:
         reportErrorAndExit('Unable to find %s user.' % USER_ROBOT_SUBMISSION)
+
+    # -------------------------------------------------------------------------
+    # find 'robot_leaderboard' user
+    # -------------------------------------------------------------------------
+
+    if GLOBAL_DEBUG:
+        debug('find %s user.' % USER_ROBOT_LEADERBOARD)
+
+    GLOBAL_ROBOT_LEADERBOARD = None
+    for user in GLOBAL_USERS:
+        if user.username == USER_ROBOT_LEADERBOARD:
+            GLOBAL_ROBOT_LEADERBOARD = user
+            break
+    if GLOBAL_ROBOT_LEADERBOARD is None:
+        reportErrorAndExit('Unable to find %s user.' % USER_ROBOT_LEADERBOARD)
 
     # -------------------------------------------------------------------------
     # get mapping for list of media
@@ -321,6 +339,7 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
     global GLOBAL_CORPUS
     global GLOBAL_ORGANIZER
     global GLOBAL_ROBOT_SUBMISSION
+    global GLOBAL_ROBOT_LEADERBOARD
 
     # -------------------------------------------------------------------------
     # create empty (evidence and label) submission layers
@@ -359,6 +378,10 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
             evidenceLayer, GLOBAL_CLIENT.READ,
             user=GLOBAL_ROBOT_SUBMISSION._id)
 
+        GLOBAL_CLIENT.setLayerPermissions(
+            evidenceLayer, GLOBAL_CLIENT.READ,
+            user=GLOBAL_ROBOT_LEADERBOARD._id)
+
         # create empty label layer
         labelLayer = GLOBAL_CLIENT.createLayer(
             GLOBAL_CORPUS, submissionName,
@@ -388,6 +411,10 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
         GLOBAL_CLIENT.setLayerPermissions(
             labelLayer, GLOBAL_CLIENT.READ,
             user=GLOBAL_ROBOT_SUBMISSION._id)
+
+        GLOBAL_CLIENT.setLayerPermissions(
+            labelLayer, GLOBAL_CLIENT.READ,
+            user=GLOBAL_ROBOT_LEADERBOARD._id)
 
         # cross-reference evidence and label layers
         GLOBAL_CLIENT.updateLayer(
