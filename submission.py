@@ -66,6 +66,7 @@ from camomile import Camomile
 from common import loadLabel, loadEvidence
 import pandas as pd
 import sys
+from progressbar import ProgressBar, Percentage
 
 # pretty pandas display
 pd.set_option('display.max_rows', 500)
@@ -321,11 +322,23 @@ def initializeForSubmission():
         layers = GLOBAL_CLIENT.getLayers(
             GLOBAL_CORPUS, name=LAYER_SUBMISSION_SHOT)
         shotLayer = layers[0]._id
-        shots = GLOBAL_CLIENT.getAnnotations(layer=shotLayer)
-        GLOBAL_SHOT_MAPPING = {
-            (mediumMapping[s.id_medium], s.fragment.shot_number): s._id
-            for s in shots
-        }
+
+        widgets = ['Downloading shots: ', Percentage()]
+        progress = ProgressBar(widgets=widgets,
+                               maxval=len(GLOBAL_VIDEO_MAPPING)).start()
+
+        GLOBAL_SHOT_MAPPING = {}
+        for i, (name, medium) in enumerate(GLOBAL_VIDEO_MAPPING.iteritems()):
+
+            shots = GLOBAL_CLIENT.getAnnotations(layer=shotLayer,
+                                                 medium=medium)
+
+            for s in shots:
+                GLOBAL_SHOT_MAPPING[name, s.fragment.shot_number] = s._id
+
+            progress.update(i)
+
+        progress.finish()
 
     except Exception:
         reportErrorAndExit(
@@ -469,12 +482,20 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
             }
             labels.setdefault(videoID, []).append(annotation)
 
+        widgets = ['Uploading submission: ', Percentage()]
+        progress = ProgressBar(widgets=widgets, maxval=len(labels) + 1).start()
+
         # submit all evidences at once
         GLOBAL_CLIENT.createAnnotations(evidenceLayer, evidences)
 
+        progress.update(1)
+
         # submit labels video by video
-        for videoID in labels:
+        for v, videoID in enumerate(labels):
             GLOBAL_CLIENT.createAnnotations(labelLayer, labels[videoID])
+            progress.update(v + 1)
+
+        progress.finish()
 
     except Exception:
         reportErrorAndExit('Unable to upload submissions.')
