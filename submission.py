@@ -30,6 +30,7 @@
 """
 MediaEval Person Discovery Task submission manager.
 
+  - date         Print the current date
   - list         Print the list of submissions.
   - delete       Delete submissions (interactive).
   - check        Validate submission files content.
@@ -37,6 +38,7 @@ MediaEval Person Discovery Task submission manager.
   - contrastive  Submit contrastive run.
 
 Usage:
+  submission [options] date
   submission [options] list
   submission [options] delete
   submission [options] check <run.label> <run.evidence>
@@ -607,6 +609,10 @@ def checkSubmission(label, evidence):
         raise ValueError(msg)
 
 
+def modeDate():
+    print GLOBAL_CLIENT.getDate().date
+
+
 def modeList():
     submissions = getSubmissions()
     printSubmissions(submissions)
@@ -756,6 +762,9 @@ if __name__ == '__main__':
     username = arguments['--login']
     password = arguments['--password']
     initialize(url, username=username, password=password)
+
+    if arguments['date']:
+        modeDate()
 
     if arguments['list']:
         modeList()
