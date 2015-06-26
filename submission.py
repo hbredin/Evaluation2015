@@ -572,7 +572,7 @@ def getSubmissions():
         submissionLayers.append({
             'date': layer.history[-1].date,
             'user': findUsername(layer.history[-1].id_user),
-            'type': layer.description.submission,
+            'type': layer.description.get('submission', None),
             'name': layer.name,
             'label': layer._id,
             'evidence': layer.description.id_evidence,
