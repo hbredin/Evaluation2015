@@ -26,6 +26,11 @@
 # AUTHORS
 # Hervé BREDIN - http://herve.niderb.fr
 
+# CHANGELOG
+
+# Version 0.1.1 (2015-06-26)
+# fix: missing submission type for incomplete submissions
+
 
 """
 MediaEval Person Discovery Task submission manager.
@@ -308,7 +313,6 @@ def initializeForSubmission():
 
     try:
         media = GLOBAL_CLIENT.getMedia(corpus=GLOBAL_CORPUS)
-        mediumMapping = {medium._id: medium.name for medium in media}
         GLOBAL_VIDEO_MAPPING = {medium.name: medium._id for medium in media}
     except Exception:
         reportErrorAndExit('Unable to build mediumID ==> videoID mapping')
@@ -370,6 +374,7 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
             data_type=DATATYPE_EVIDENCE,
             fragment_type=FRAGMENTTYPE_SUBMISSION,
             description={
+                "submission": submissionType,
                 "status": SUBMISSION_STATUS_WIP,
                 "id_user": GLOBAL_ME._id,
                 "id_team": GLOBAL_TEAM._id
@@ -403,6 +408,7 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
             data_type=DATATYPE_LABEL,
             fragment_type=FRAGMENTTYPE_SUBMISSION,
             description={
+                "submission": submissionType,
                 "status": SUBMISSION_STATUS_WIP,
                 "id_evidence": evidenceLayer,
                 "id_user": GLOBAL_ME._id,
@@ -435,6 +441,7 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
         GLOBAL_CLIENT.updateLayer(
             evidenceLayer,
             description={
+                "submission": submissionType,
                 "status": SUBMISSION_STATUS_WIP,
                 "id_label": labelLayer,
                 "id_user": GLOBAL_ME._id,
@@ -748,7 +755,7 @@ def modeContrastive(pathToLabel, pathToEvidence, submissionName):
 
 if __name__ == '__main__':
 
-    arguments = docopt(__doc__, version='0.1')
+    arguments = docopt(__doc__, version='0.1.1')
 
     GLOBAL_DEV_OR_TEST = 'test'
     if arguments['--dev']:
