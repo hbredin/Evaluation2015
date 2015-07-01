@@ -28,6 +28,9 @@
 
 # CHANGELOG
 
+# Version 0.1.2 (2015-07-01)
+# fix: upload evidences one video at a time
+
 # Version 0.1.1 (2015-06-26)
 # fix: missing submission type for incomplete submissions
 
@@ -462,7 +465,7 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
     try:
 
         # prepare list of evidences in Camomile format
-        evidences = []
+        evidences = {}
         for _, row in evidence.iterrows():
             (personName, videoID, shotNumber, source) = tuple(row)
             annotation = {
@@ -474,7 +477,18 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
                     "source": source
                 }
             }
-            evidences.append(annotation)
+            evidences.setdefault(videoID, []).append(annotation)
+
+        # submit evidences video by video
+
+        widgets = ['Uploading evidences: ', Percentage()]
+        progress = ProgressBar(widgets=widgets, maxval=len(evidences)).start()
+
+        for v, videoID in enumerate(evidences):
+            GLOBAL_CLIENT.createAnnotations(evidenceLayer, evidences[videoID])
+            progress.update(v)
+
+        progress.finish()
 
         # prepare one list of label per video in Camomile format
         labels = {}
@@ -491,18 +505,13 @@ def createNewSubmission(submissionType, submissionName, label, evidence):
             }
             labels.setdefault(videoID, []).append(annotation)
 
-        widgets = ['Uploading submission: ', Percentage()]
-        progress = ProgressBar(widgets=widgets, maxval=len(labels) + 1).start()
-
-        # submit all evidences at once
-        GLOBAL_CLIENT.createAnnotations(evidenceLayer, evidences)
-
-        progress.update(1)
+        widgets = ['Uploading labels: ', Percentage()]
+        progress = ProgressBar(widgets=widgets, maxval=len(labels)).start()
 
         # submit labels video by video
         for v, videoID in enumerate(labels):
             GLOBAL_CLIENT.createAnnotations(labelLayer, labels[videoID])
-            progress.update(v + 1)
+            progress.update(v)
 
         progress.finish()
 
@@ -755,7 +764,7 @@ def modeContrastive(pathToLabel, pathToEvidence, submissionName):
 
 if __name__ == '__main__':
 
-    arguments = docopt(__doc__, version='0.1.1')
+    arguments = docopt(__doc__, version='0.1.2')
 
     GLOBAL_DEV_OR_TEST = 'test'
     if arguments['--dev']:
