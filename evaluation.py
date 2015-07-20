@@ -121,7 +121,7 @@ def computeAveragePrecision(vReturned, vRelevant):
 
 if __name__ == '__main__':
 
-    arguments = docopt(__doc__, version='0.1')
+    arguments = docopt(__doc__, version='0.2')
 
     shot = arguments['<reference.shot>']
     reference = arguments['<reference.ref>']
