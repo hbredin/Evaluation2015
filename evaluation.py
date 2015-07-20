@@ -175,7 +175,8 @@ if __name__ == '__main__':
 
         qRelevant = _qRelevant
 
-        qReturned = evidence[evidence.personName == personName][['videoID', 'shotNumber', 'source']]
+        qReturned = evidence[evidence.personName == personName][[
+            'videoID', 'shotNumber', 'source']]
         for _, videoID, shotNumber, source in qReturned.itertuples():
             break
 
@@ -186,7 +187,8 @@ if __name__ == '__main__':
 
     MAP = np.mean([averagePrecision[query] for query in queries])
     mCorrectness = np.mean([correctness[query] for query in queries])
-    EwMAP = np.mean([correctness[query] * averagePrecision[query] for query in queries])
+    EwMAP = np.mean([correctness[query] * averagePrecision[query]
+                     for query in queries])
 
     print 'EwMAP = %.2f %%' % (100 * EwMAP)
     print 'MAP = %.2f %%' % (100 * MAP)
