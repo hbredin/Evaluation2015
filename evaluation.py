@@ -139,14 +139,18 @@ if __name__ == '__main__':
         # (i.e. shots containing closest personName)
         qReturned = label[label.personName == personName]
 
-        # sort shots by decreasing confidence
-        # (in case of shots returned twice for this query, keep maximum)
-        qReturned = (qReturned.groupby(['videoID', 'shotNumber'])
-                              .aggregate(np.max)
-                              .sort(['confidence'], ascending=False))
+        if len(qReturned) == 0:
+            qReturned = list()
 
-        # get list of returned shots in decreasing confidence
-        qReturned = list(qReturned.index)
+        else:
+            # sort shots by decreasing confidence
+            # (in case of shots returned twice for this query, keep maximum)
+            qReturned = (qReturned.groupby(['videoID', 'shotNumber'])
+                                  .aggregate(np.max)
+                                  .sort(['confidence'], ascending=False))
+
+            # get list of returned shots in decreasing confidence
+            qReturned = list(qReturned.index)
 
         # compute average precision for this query
         averagePrecision[query] = computeAveragePrecision(qReturned,
