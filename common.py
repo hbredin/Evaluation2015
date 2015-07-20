@@ -53,33 +53,3 @@ def loadLabelReference(reference):
 def loadEvidenceReference(evireference):
     names = ['videoID', 'shotNumber', 'personName', 'source']
     return pd.read_table(evireference, sep=' ', names=names)
-
-
-def checkSubmission(shot, label, evidence):
-
-    # check that labels are only provided for selected shots
-    shotShots = set(shot.index)
-    labelShots = set(tuple(s) for _, s in label[['videoID', 'shotNumber']].iterrows())
-    if not labelShots.issubset(shotShots):
-        msg = ('Labels should only be computed for provided shots.')
-        raise ValueError(msg)
-
-    # check that evidence is provided for every unique label
-    labelNames = set(label['personName'].unique())
-    evidenceNames = set(evidence['personName'].unique())
-    if labelNames != evidenceNames:
-        msg = ('There must be exactly one evidence '
-               'per unique name in label submission.')
-        raise ValueError(msg)
-
-    # check that there is no more than one evidence per label
-    if len(evidenceNames) != len(evidence):
-        msg = ('There must be exactly one evidence '
-               'per unique name in label submission.')
-        raise ValueError(msg)
-
-    # check that evidences are chosen among selected shots
-    evidenceShots = set(tuple(s) for _, s in evidence[['videoID', 'shotNumber']].iterrows())
-    if not evidenceShots.issubset(shotShots):
-        msg = ('Evidences should only be chosen among provided shots.')
-        raise ValueError(msg)

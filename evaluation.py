@@ -34,32 +34,66 @@ Usage:
   evaluation [options] <reference.shot> <reference.ref> <reference.eviref> <hypothesis.label> <hypothesis.evidence>
 
 Options:
-  -h --help                  Show this screen.
-  --version                  Show version.
-  --queries=<queries.lst>    Query list.
-  --levenshtein=<threshold>  Levenshtein ratio threshold [default: 0.95]
+  -h --help                     Show this screen.
+  --version                     Show version.
+  --queries=<queries.lst>       Query list.
+  --levenshtein=<threshold>     Levenshtein ratio threshold [default: 0.95]
+  --consensus=<consensus.shot>  Label-annotated subset of <reference.shot>
 """
 
 from docopt import docopt
 from Levenshtein import ratio
 import numpy as np
 
-from common import loadShot, loadLabel, loadEvidence, checkSubmission
+from common import loadShot, loadLabel, loadEvidence
 from common import loadLabelReference, loadEvidenceReference
 
 
-def loadFiles(shot, reference, evireference, label, evidence):
+def loadFiles(shot, reference, evireference, label, evidence, consensus=None):
 
     shot = loadShot(shot)
     label = loadLabel(label)
     evidence = loadEvidence(evidence)
 
-    checkSubmission(shot, label, evidence)
+    # check that labels are only provided for selected shots
+    labelShots = set(
+        tuple(s) for _, s in label[['videoID', 'shotNumber']].iterrows())
+    if not labelShots.issubset(set(shot.index)):
+        msg = ('Labels should only be computed for provided shots.')
+        raise ValueError(msg)
+
+    # check that evidence is provided for every unique label
+    labelNames = set(label['personName'].unique())
+    evidenceNames = set(evidence['personName'].unique())
+    if labelNames != evidenceNames:
+        msg = ('There must be exactly one evidence '
+               'per unique name in label submission.')
+        raise ValueError(msg)
+
+    # check that there is no more than one evidence per label
+    if len(evidenceNames) != len(evidence):
+        msg = ('There must be exactly one evidence '
+               'per unique name in label submission.')
+        raise ValueError(msg)
+
+    # check that evidences are chosen among selected shots
+    evidenceShots = set(tuple(s) for _, s in evidence[['videoID', 'shotNumber']].iterrows())
+    if not evidenceShots.issubset(set(shot.index)):
+        msg = ('Evidences should only be chosen among provided shots.')
+        raise ValueError(msg)
+
+    # only keep labels for shot with consensus
+    if consensus:
+        consensus = loadShot(consensus)
+        mask = label.apply(
+            lambda x: (x['videoID'], x['shotNumber']) in set(consensus.index),
+            axis=1)
+        label = label[mask]
 
     reference = loadLabelReference(reference)
     evireference = loadEvidenceReference(evireference)
 
-    return shot, reference, evireference, label, evidence
+    return reference, evireference, label, evidence
 
 
 def closeEnough(personName, query, threshold):
@@ -95,9 +129,10 @@ if __name__ == '__main__':
     label = arguments['<hypothesis.label>']
     evidence = arguments['<hypothesis.evidence>']
     threshold = float(arguments['--levenshtein'])
+    consensus = arguments['--consensus']
 
-    shot, reference, evireference, label, evidence = loadFiles(
-        shot, reference, evireference, label, evidence)
+    reference, evireference, label, evidence = loadFiles(
+        shot, reference, evireference, label, evidence, consensus=consensus)
 
     if arguments['--queries']:
         with open(arguments['--queries'], 'r') as f:
