@@ -104,8 +104,8 @@ if __name__ == '__main__':
             queries = [line.strip() for line in f]
 
     else:
-        # build list of queries from reference
-        queries = sorted(set(reference['personName'].unique()))
+        # build list of queries from evireference
+        queries = sorted(set(evireference['personName'].unique()))
 
     # query --> averagePrecision dictionary
     averagePrecision = {}
