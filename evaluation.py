@@ -105,23 +105,21 @@ def computeAveragePrecision(vReturned, vRelevant):
     nReturned = len(vReturned)
     nRelevant = len(vRelevant)
 
-    if nRelevant == 0 and nReturned == 0:
+    if nRelevant == 0:
         return 1.
 
-    if nRelevant == 0 and nReturned > 0:
-        return 0.
-
-    if nReturned == 0 and nRelevant > 0:
+    if nReturned == 0:
         return 0.
 
     returnedIsRelevant = np.array([item in vRelevant for item in vReturned])
     precision = np.cumsum(returnedIsRelevant) / (1. + np.arange(nReturned))
-    return np.sum(precision * returnedIsRelevant) / min(nReturned, nRelevant)
+
+    return np.sum(precision * returnedIsRelevant) / nRelevant
 
 
 if __name__ == '__main__':
 
-    arguments = docopt(__doc__, version='0.2')
+    arguments = docopt(__doc__, version='0.3')
 
     shot = arguments['<reference.shot>']
     reference = arguments['<reference.ref>']
@@ -155,11 +153,6 @@ if __name__ == '__main__':
 
         personName = best[0] if best[1] > threshold else None
 
-        if personName is None:
-            averagePrecision[query] = 0.
-            correctness[query] = 0.
-            continue
-
         # =====================================================================
         # Evaluation of LABELS
         # =====================================================================
@@ -174,8 +167,11 @@ if __name__ == '__main__':
         # (i.e. shots containing closest personName)
         qReturned = label[label.personName == personName]
 
+        # this can only happen with --consensus option
+        # when hypothesis contains shot in the out of consensus part
+        # hack to solve this corner case
         if len(qReturned) == 0:
-            qReturned = list()
+            averagePrecision[query] = 0. if len(qRelevant) > 0. else 1.
 
         else:
             # sort shots by decreasing confidence
@@ -187,13 +183,19 @@ if __name__ == '__main__':
             # get list of returned shots in decreasing confidence
             qReturned = list(qReturned.index)
 
-        # compute average precision for this query
-        averagePrecision[query] = computeAveragePrecision(qReturned,
-                                                          qRelevant)
+            # compute average precision for this query
+            averagePrecision[query] = computeAveragePrecision(qReturned,
+                                                              qRelevant)
 
         # =====================================================================
         # Evaluation of EVIDENCES
         # =====================================================================
+
+
+
+        if personName is None:
+            correctness[query] = 0. if len(qRelevant) > 0. else 1.
+            continue
 
         # get evidence shots for this query, according to reference
         qRelevant = evireference[evireference.personName == query]
