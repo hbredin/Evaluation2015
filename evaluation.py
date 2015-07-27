@@ -218,7 +218,7 @@ if __name__ == '__main__':
             break
 
         if (videoID, shotNumber, source) in qRelevant:
-            correctness[query] = best[1] if best[1] > threshold else 0.
+            correctness[query] = 1. if best[1] > threshold else 0.
         else:
             correctness[query] = 0.
 
